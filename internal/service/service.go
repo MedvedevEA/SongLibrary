@@ -10,6 +10,7 @@ import (
 	controllerDto "songLibrary/internal/controller/dto"
 	outsideserverDto "songLibrary/internal/outsideserver/dto"
 	repositoryDto "songLibrary/internal/repository/dto"
+	"songLibrary/pkg/helpers"
 
 	"songLibrary/internal/model"
 	"songLibrary/internal/outsideserver"
@@ -33,34 +34,39 @@ func (service *Service) AddSong(controllerReq *controllerDto.AddSongReq) (*contr
 		Group: controllerReq.Group,
 		Song:  controllerReq.Name,
 	})
-	if err != nil {
-		return nil, err
-	}
 	//Создание новой записи на основании данных полученных от внешнего сервера
-	var outsideServerReleaseDate *time.Time = nil
-	if outsideServerRes.ReleaseDate != "" {
-		date, err := time.Parse("02-01-2006", outsideServerRes.ReleaseDate)
-		if err != nil {
-			return nil, fmt.Errorf("AddSongService: %s", err)
+	var (
+		ReleaseDate *time.Time
+		Text        string
+		Link        *string
+	)
+	if err == nil {
+		if outsideServerRes.ReleaseDate != "" {
+			date, err := time.Parse("02-01-2006", outsideServerRes.ReleaseDate)
+			if err != nil {
+				return nil, fmt.Errorf("AddSongService: %s", err)
+			}
+			ReleaseDate = &date
 		}
-		outsideServerReleaseDate = &date
+		Text = outsideServerRes.Text
+		if outsideServerRes.Link != "" {
+			Link = &outsideServerRes.Link
+		}
 	}
-
 	repositoryRes, err := service.store.AddSong(&repositoryDto.AddSongReq{
 		Group:       controllerReq.Group,
 		Name:        controllerReq.Name,
-		ReleaseDate: outsideServerReleaseDate,
-		Text:        strings.Split(outsideServerRes.Text, "\n\n"),
-		Link:        &outsideServerRes.Link,
+		ReleaseDate: ReleaseDate,
+		Text:        strings.Split(Text, "\n\n"),
+		Link:        Link,
 	})
 	if err != nil {
 		return nil, err
 	}
-
-	var releaseDate *string = nil
+	var releaseDate *helpers.Date
 	if repositoryRes.ReleaseDate != nil {
-		date := repositoryRes.ReleaseDate.Format("02-01-2006")
-		releaseDate = &date
+		data := helpers.Date(*repositoryRes.ReleaseDate)
+		releaseDate = &data
 	}
 	return &controllerDto.AddSongRes{
 		SongId:      repositoryRes.SongId,
@@ -79,10 +85,10 @@ func (service *Service) GetInfo(controllerReq *controllerDto.GetInfoReq) (*contr
 	if err != nil {
 		return nil, err
 	}
-	var releaseDate *string = nil
+	var releaseDate *helpers.Date
 	if repositoryRes.ReleaseDate != nil {
-		formatData := repositoryRes.ReleaseDate.Format("02-01-2006")
-		releaseDate = &formatData
+		data := helpers.Date(*repositoryRes.ReleaseDate)
+		releaseDate = &data
 	}
 	return &controllerDto.GetInfoRes{
 		ReleaseDate: releaseDate,
@@ -95,10 +101,10 @@ func (service *Service) GetSong(controllerReq *uuid.UUID) (*controllerDto.GetSon
 	if err != nil {
 		return nil, err
 	}
-	var releaseDate *string = nil
+	var releaseDate *helpers.Date
 	if repositoryRes.ReleaseDate != nil {
-		formatData := repositoryRes.ReleaseDate.Format("02-01-2006")
-		releaseDate = &formatData
+		date := helpers.Date(*repositoryRes.ReleaseDate)
+		releaseDate = &date
 	}
 	return &controllerDto.GetSongRes{
 		SongId:      repositoryRes.SongId,
@@ -142,9 +148,10 @@ func (service *Service) GetSongs(controllerReq *controllerDto.GetSongsReq) ([]*c
 	if controllerReq.Limit != nil {
 		limit = *controllerReq.Limit
 	}
-	var releaseDate *time.Time = nil
+	var releaseDate *time.Time
 	if controllerReq.ReleaseDate != nil {
-		releaseDate = &controllerReq.ReleaseDate.Time
+		date := time.Time(*controllerReq.ReleaseDate)
+		releaseDate = &date
 	}
 	repositoryRes, err := service.store.GetSongs(&repositoryDto.GetSongsReq{
 		Offset:      offset,
@@ -160,10 +167,10 @@ func (service *Service) GetSongs(controllerReq *controllerDto.GetSongsReq) ([]*c
 	}
 	controllerRes := []*controllerDto.GetSongsRes{}
 	for _, value := range repositoryRes {
-		var releaseDate *string = nil
+		var releaseDate *helpers.Date
 		if value.ReleaseDate != nil {
-			formatData := value.ReleaseDate.Format("02-01-2006")
-			releaseDate = &formatData
+			date := helpers.Date(*value.ReleaseDate)
+			releaseDate = &date
 		}
 		controllerRes = append(controllerRes, &controllerDto.GetSongsRes{
 			SongId:      value.SongId,
@@ -178,9 +185,10 @@ func (service *Service) GetSongs(controllerReq *controllerDto.GetSongsReq) ([]*c
 	return controllerRes, nil
 }
 func (service *Service) UpdateSong(controllerReq *controllerDto.UpdateSongReq) error {
-	var releaseDate *time.Time = nil
+	var releaseDate *time.Time
 	if controllerReq.ReleaseDate != nil {
-		releaseDate = &controllerReq.ReleaseDate.Time
+		date := time.Time(*controllerReq.ReleaseDate)
+		releaseDate = &date
 	}
 	return service.store.UpdateSong(&model.Song{
 		SongId:      controllerReq.SongId,
