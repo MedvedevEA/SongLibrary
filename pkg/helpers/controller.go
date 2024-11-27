@@ -23,7 +23,7 @@ func ToString(value string, isValue bool) *string {
 	}
 	return &value
 }
-func ToDateDDMMYYYY(value string, isValue bool) (*DateDDMMYYYY, error) {
+func ToDate(value string, isValue bool) (*Date, error) {
 	if !isValue {
 		return nil, nil
 	}
@@ -31,7 +31,8 @@ func ToDateDDMMYYYY(value string, isValue bool) (*DateDDMMYYYY, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &DateDDMMYYYY{Time: dateValue}, nil
+	date := (Date(dateValue))
+	return &date, nil
 }
 func ToUuid(value string, isValue bool) (*uuid.UUID, error) {
 	if !isValue {

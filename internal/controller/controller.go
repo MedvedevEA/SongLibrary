@@ -126,7 +126,7 @@ func (controller *Controller) getSongs(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"message": fmt.Sprintf("Controller: %s", err)})
 		return
 	}
-	releaseDate, err := helpers.ToDateDDMMYYYY(ctx.GetQuery("release_date"))
+	releaseDate, err := helpers.ToDate(ctx.GetQuery("release_date"))
 	if err != nil {
 		ctx.JSON(400, gin.H{"message": fmt.Sprintf("Controller: %s", err)})
 		return

@@ -11,29 +11,29 @@ type AddSongReq struct {
 	Name  string `json:"name"`
 }
 type AddSongRes struct {
-	SongId      *uuid.UUID `json:"song_id"`
-	Group       string     `json:"group"`
-	Name        string     `json:"name"`
-	ReleaseDate *string    `json:"release_date"`
-	Text        string     `json:"text"`
-	Link        *string    `json:"link"`
+	SongId      *uuid.UUID    `json:"song_id"`
+	Group       string        `json:"group"`
+	Name        string        `json:"name"`
+	ReleaseDate *helpers.Date `json:"release_date"`
+	Text        string        `json:"text"`
+	Link        *string       `json:"link"`
 }
 type GetInfoReq struct {
 	Group string `json:"group"`
 	Song  string `json:"song"`
 }
 type GetInfoRes struct {
-	ReleaseDate *string `json:"release_date"`
-	Text        string  `json:"text"`
-	Link        *string `json:"link"`
+	ReleaseDate *helpers.Date `json:"release_date"`
+	Text        string        `json:"text"`
+	Link        *string       `json:"link"`
 }
 type GetSongRes struct {
-	SongId      *uuid.UUID `json:"song_id"`
-	Group       string     `json:"group"`
-	Name        string     `json:"name"`
-	ReleaseDate *string    `json:"release_date"`
-	Text        string     `json:"text"`
-	Link        *string    `json:"link"`
+	SongId      *uuid.UUID    `json:"song_id"`
+	Group       string        `json:"group"`
+	Name        string        `json:"name"`
+	ReleaseDate *helpers.Date `json:"release_date"`
+	Text        string        `json:"text"`
+	Link        *string       `json:"link"`
 }
 type GetSongTextReq struct {
 	Limit  *int       `json:"limit"`
@@ -44,27 +44,27 @@ type GetSongTextRes struct {
 	Verse string `json:"verse"`
 }
 type GetSongsReq struct {
-	Limit       *int                  `json:"limit"`
-	Offset      *int                  `json:"offset"`
-	Group       *string               `json:"group"`
-	Name        *string               `json:"name"`
-	ReleaseDate *helpers.DateDDMMYYYY `json:"release_date"`
-	Text        *string               `json:"text"`
-	Link        *string               `json:"link"`
+	Limit       *int          `json:"limit"`
+	Offset      *int          `json:"offset"`
+	Group       *string       `json:"group"`
+	Name        *string       `json:"name"`
+	ReleaseDate *helpers.Date `json:"release_date"`
+	Text        *string       `json:"text"`
+	Link        *string       `json:"link"`
 }
 type GetSongsRes struct {
-	SongId      *uuid.UUID `json:"song_id"`
-	Group       string     `json:"group"`
-	Name        string     `json:"name"`
-	ReleaseDate *string    `json:"release_date"`
-	Text        string     `json:"text"`
-	Link        *string    `json:"link"`
+	SongId      *uuid.UUID    `json:"song_id"`
+	Group       string        `json:"group"`
+	Name        string        `json:"name"`
+	ReleaseDate *helpers.Date `json:"release_date"`
+	Text        string        `json:"text"`
+	Link        *string       `json:"link"`
 }
 type UpdateSongReq struct {
-	SongId      *uuid.UUID            `json:"song_id"`
-	Group       string                `json:"group"`
-	Name        string                `json:"name"`
-	ReleaseDate *helpers.DateDDMMYYYY `json:"release_date"`
-	Text        string                `json:"text"`
-	Link        *string               `json:"link"`
+	SongId      *uuid.UUID    `json:"song_id"`
+	Group       string        `json:"group"`
+	Name        string        `json:"name"`
+	ReleaseDate *helpers.Date `json:"release_date"`
+	Text        string        `json:"text"`
+	Link        *string       `json:"link"`
 }
