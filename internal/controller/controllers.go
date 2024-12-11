@@ -23,6 +23,7 @@ func New(router *gin.Engine, service *service.Service) *Controller {
 		router,
 		service,
 	}
+	router.GET("info", c.info)
 
 	router.POST("groups", c.addGroup)
 	router.GET("groups/:group_id", c.getGroup)
@@ -39,6 +40,12 @@ func New(router *gin.Engine, service *service.Service) *Controller {
 
 	return c
 }
+
+// Заглушка для outsideApi
+func (c *Controller) info(ctx *gin.Context) {
+	ctx.JSON(200, gin.H{"release_date": "1990-01-01", "text": "Song text", "Link": "https://link.com"})
+}
+
 func (c *Controller) addGroup(ctx *gin.Context) {
 	req := new(controllerDto.AddGroup)
 	if err := ctx.ShouldBindJSON(req); err != nil {
@@ -61,7 +68,7 @@ func (c *Controller) getGroup(ctx *gin.Context) {
 		return
 	}
 	groupId, err := uuid.Parse(req.GroupId)
-	if err := ctx.ShouldBindUri(req); err != nil {
+	if err != nil {
 		ctx.JSON(400, gin.H{"message": err.Error()})
 		return
 	}
@@ -103,13 +110,8 @@ func (c *Controller) updateGroup(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"message": err.Error()})
 		return
 	}
-	groupId, err := uuid.Parse(req.GroupId)
-	if err := ctx.ShouldBindUri(req); err != nil {
-		ctx.JSON(400, gin.H{"message": err.Error()})
-		return
-	}
-	err = c.service.UpdateGroup(&repositoryDto.UpdateGroup{
-		GroupId: &groupId,
+	err := c.service.UpdateGroup(&repositoryDto.UpdateGroup{
+		GroupId: req.GroupId,
 		Name:    req.Name,
 	})
 	if errors.Is(err, servererrors.ErrorRecordNotFound) {
@@ -130,7 +132,7 @@ func (c *Controller) removeGroup(ctx *gin.Context) {
 		return
 	}
 	groupId, err := uuid.Parse(req.GroupId)
-	if err := ctx.ShouldBindUri(req); err != nil {
+	if err != nil {
 		ctx.JSON(400, gin.H{"message": err.Error()})
 		return
 	}
@@ -171,7 +173,7 @@ func (c *Controller) getSong(ctx *gin.Context) {
 		return
 	}
 	songId, err := uuid.Parse(req.SongId)
-	if err := ctx.ShouldBindUri(req); err != nil {
+	if err != nil {
 		ctx.JSON(400, gin.H{"message": err.Error()})
 		return
 	}
@@ -199,7 +201,7 @@ func (c *Controller) getSongText(ctx *gin.Context) {
 		return
 	}
 	songId, err := uuid.Parse(req.SongId)
-	if err := ctx.ShouldBindUri(req); err != nil {
+	if err != nil {
 		ctx.JSON(400, gin.H{"message": err.Error()})
 		return
 	}
@@ -248,12 +250,15 @@ func (c *Controller) updateSong(ctx *gin.Context) {
 		return
 	}
 	err := c.service.UpdateSong(&repositoryDto.UpdateSong{
-		SongId:      req.SongId,
-		Group:       req.Group,
-		Name:        req.Name,
-		ReleaseDate: req.ReleaseDate,
-		Text:        req.Text,
-		Link:        req.Link,
+		SongId:         req.SongId,
+		GroupId:        req.GroupId,
+		Name:           req.Name,
+		ReleaseDate:    req.ReleaseDate,
+		Text:           req.Text,
+		Link:           req.Link,
+		SetReleaseDate: req.SetReleaseDate,
+		SetText:        req.SetText,
+		SetLink:        req.SetLink,
 	})
 	if errors.Is(err, servererrors.ErrorRecordNotFound) {
 		ctx.JSON(404, gin.H{"message": err.Error()})
@@ -272,7 +277,7 @@ func (c *Controller) removeSong(ctx *gin.Context) {
 		return
 	}
 	songId, err := uuid.Parse(req.SongId)
-	if err := ctx.ShouldBindUri(req); err != nil {
+	if err != nil {
 		ctx.JSON(400, gin.H{"message": err.Error()})
 		return
 	}

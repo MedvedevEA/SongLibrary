@@ -27,6 +27,14 @@ func (s *Service) GetGroup(req *repositoryDto.GetGroup) (*model.Group, error) {
 	return s.store.GetGroup(req)
 }
 func (s *Service) GetGroups(req *repositoryDto.GetGroups) (*model.Pagination[model.Group], error) {
+	if req.Offset == nil {
+		offset := 0
+		req.Offset = &offset
+	}
+	if req.Limit == nil {
+		limit := 10
+		req.Limit = &limit
+	}
 	return s.store.GetGroups(req)
 }
 func (s *Service) UpdateGroup(req *repositoryDto.UpdateGroup) error {
@@ -52,16 +60,31 @@ func (s *Service) AddSong(req *repositoryDto.AddSong) (*model.Song, error) {
 		})
 
 	}
-
 	return s.store.AddSong(req)
 }
 func (s *Service) GetSong(req *repositoryDto.GetSong) (*model.Song, error) {
 	return s.store.GetSong(req)
 }
 func (s *Service) GetSongText(req *repositoryDto.GetSongText) (*model.Pagination[model.Verse], error) {
+	if req.Offset == nil {
+		offset := 0
+		req.Offset = &offset
+	}
+	if req.Limit == nil {
+		limit := 5
+		req.Limit = &limit
+	}
 	return s.store.GetSongText(req)
 }
 func (s *Service) GetSongs(req *repositoryDto.GetSongs) (*model.Pagination[model.Song], error) {
+	if req.Offset == nil {
+		offset := 0
+		req.Offset = &offset
+	}
+	if req.Limit == nil {
+		limit := 10
+		req.Limit = &limit
+	}
 	return s.store.GetSongs(req)
 }
 func (s *Service) UpdateSong(req *repositoryDto.UpdateSong) error {

@@ -11,6 +11,7 @@ import (
 	"time"
 
 	"songLibrary/internal/controller"
+	"songLibrary/internal/middlewares"
 	"songLibrary/internal/outsideapi"
 	"songLibrary/internal/service"
 	"songLibrary/internal/store"
@@ -62,12 +63,9 @@ func main() {
 	//Подключение бизнес логики
 	service := service.New(store, outsideApi)
 	//Конфигурация http сервера
-	gin.SetMode(gin.ReleaseMode)
-	router := gin.Default()
-
-	//router := gin.New()
-	//router.Use(gin.Recovery())
-	//router.Use(middlewares.LoggingMiddleware())
+	router := gin.New()
+	router.Use(gin.Recovery())
+	router.Use(middlewares.LoggingMiddleware())
 	controller.New(router, service)
 	server := http.Server{
 		Addr:    os.Getenv("SONGLIBRARY_SERVER_BIND_ADDRESS"),
