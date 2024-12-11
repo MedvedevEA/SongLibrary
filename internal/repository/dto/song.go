@@ -31,12 +31,15 @@ type GetSongs struct {
 	Link        *string     `json:"link"`
 }
 type UpdateSong struct {
-	SongId      *uuid.UUID  `json:"song_id"`
-	Group       *string     `json:"group"`
-	Name        *string     `json:"name"`
-	ReleaseDate *types.Date `json:"release_date"`
-	Text        *string     `json:"text"`
-	Link        *string     `json:"link"`
+	SongId         *uuid.UUID  `json:"song_id"`
+	GroupId        *uuid.UUID  `json:"group_id"`
+	Name           *string     `json:"name"`
+	SetReleaseDate *bool       `json:"set_release_date"`
+	ReleaseDate    *types.Date `json:"release_date"`
+	SetText        *bool       `json:"set_text"`
+	Text           *string     `json:"text"`
+	SetLink        *bool       `json:"set_link"`
+	Link           *string     `json:"link"`
 }
 type RemoveSong struct {
 	SongId *uuid.UUID `json:"song_id"`
