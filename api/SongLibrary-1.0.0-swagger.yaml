@@ -1,0 +1,317 @@
+openapi: 3.0.0
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/imedvedevea/SongLibrary/1.0.0
+info:
+  description: EffectiveMobile's test task
+  version: "1.0.0"
+  title: SongLibrary
+  contact:
+    email: iMedvedevEA@gmail.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+paths:
+  /songs:
+    get:
+      summary: getSongs
+      operationId: getSongs
+      description: Get a songs with pagination
+      parameters:
+        - name: offset
+          required: false
+          in: query
+          description: Songs оffset 
+          schema:
+            default: 0
+            type: integer
+        - name: limit
+          required: false
+          in: query
+          description: Songs limit
+          schema:
+            default: 10
+            type: integer
+        - name: group
+          required: false
+          in: query
+          description: The value of the filter by field group
+          schema:
+            type: string
+        - name: name
+          required: false
+          in: query
+          description: The value of the filter by field name
+          schema:
+            type: string
+            example: "Кукушка"
+        - name: release_date
+          required: false
+          in: query
+          description: The value of the filter by release date
+          schema:
+            type: string
+            format: date
+            example: '01-01-1990'
+        - name: text
+          required: false
+          in: query
+          description: The value of the filter by release text
+          schema:
+            type: string        
+        - name: link
+          required: false
+          in: query
+          description: The value of the filter by release link
+          schema:
+            type: string      
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/song'
+                example: |
+                  [{
+                  "song_id": "c51baa77-d2b2-41bd-8dd2-f793bfcf1781",
+                  "group":"Кино",
+                  "name": "Кукушка",
+                  "release_date": "01-01-1990",
+                  "text": "Песен еще ненаписанных...",
+                  "link": "https://youtu.be/yNp9SBW4xTA"
+                  }]
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error     
+    post:
+      summary: addSong
+      operationId: addSong
+      description: Add a new song to the library
+      requestBody:
+        description: Add song request dto
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/addSongrequestDto"  
+            example: |
+              {
+              "group":"Кино",
+              "name":"Кукушка"
+              }
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/song'
+                example: |
+                  {
+                  "song_id": "c51baa77-d2b2-41bd-8dd2-f793bfcf1781",
+                  "group":"Кино",
+                  "name": "Кукушка",
+                  "release_date": "01-01-1990",
+                  "text": "Песен еще ненаписанных...",
+                  "link": "https://youtu.be/yNp9SBW4xTA"
+                  }
+                
+        '400':
+          description: Bad Request
+        '500':
+          description: Internal Server Error
+    put:
+      summary: updateSong
+      operationId: updateSong
+      description: Updating songs in libraries
+      requestBody:
+        description: Song model
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/song"
+            example: |
+              {
+              "song_id": "c51baa77-d2b2-41bd-8dd2-f793bfcf1781",
+              "group":"Кино",
+              "name": "Кукушка",
+              "release_date": "01-01-1990",
+              "text": "Песен еще ненаписанных...",
+              "link": "https://youtu.be/yNp9SBW4xTA"
+              }            
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '404':
+          description: Song not found
+        '500':
+          description: Internal Server Error
+  /songs/{song_id}:
+    get:
+      summary: getSong
+      operationId: getSong
+      description: Get a song by ID
+      parameters:
+        - name: song_id
+          required: true
+          in: path
+          description: Song ID
+          schema:
+            type: string
+            format: uuid
+            example: c51baa77-d2b2-41bd-8dd2-f793bfcf1781
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/song'
+                example: |
+                  {
+                  "song_id": "c51baa77-d2b2-41bd-8dd2-f793bfcf1781",
+                  "group":"Кино",
+                  "name": "Кукушка",
+                  "release_date": "01-01-1990",
+                  "text": "Песен еще ненаписанных...",
+                  "link": "https://youtu.be/yNp9SBW4xTA"
+                  }
+                
+        '400':
+          description: Bad Request
+        '404':
+          description: Song not found
+        '500':
+          description: Internal Server Error
+    delete:
+      summary: deleteSong
+      operationId: deleteSong
+      description: Deleting a song from the library
+      parameters:
+        - name: song_id
+          required: true
+          in: path
+          description: Song ID
+          schema:
+            type: string
+            format: uuid
+            example: 6b1b627f-1609-488c-9c38-c87a3b70d33d
+      responses:
+        '204':
+          description: No Content
+        '400':
+          description: Bad Request
+        '404':
+          description: Song not found
+        '500':
+          description: Internal Server Error      
+  /songs/{song_id}/text:
+    get:
+      summary: getSongText
+      operationId: getSongText
+      description: Get a song text by ID with pagination
+      parameters:
+        - name: song_id
+          required: true
+          in: path
+          description: Song ID
+          schema:
+            type: string
+            format: uuid
+            example: 6b1b627f-1609-488c-9c38-c87a3b70d33d
+        - name: offset
+          required: false
+          in: query
+          description: Verses оffset 
+          schema:
+            default: 0
+            type: integer
+            example: 1
+        - name: limit
+          required: false
+          in: query
+          description: Verses limit
+          schema:
+            default: 5
+            type: integer
+            example: 2
+      responses:
+        '200':
+          description: Ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+                example: |
+                  [
+                  {"verse": "Мне хочется плакать от боли\nИли забыться во сне,\nГде твои крылья,\nКоторые так нравились мне?"},
+                  {"verse": "Где твои крылья,\nКоторые нравились мне?\nГде твои крылья,\nКоторые нравились мне?"}
+                  ]
+        '400':
+          description: Bad Request
+        '404':
+          description: Song not found
+        '500':
+          description: Internal Server Error   
+components:
+  schemas:
+    song:
+      description: Song model
+      type: object
+      required:
+        - song_id
+        - group
+        - name
+        - release_date
+        - text
+        - link
+      properties:
+        song_id:
+          type: string
+          format: uuid
+          example: "d290f1ee-6c54-4b01-90e6-d701748f0851"
+        group:
+          type: string
+          example: "Group name"
+        name:
+          type: string
+          example: "Song name"
+        releaseDate:
+          type: string
+          format: date
+          example: '02-01-2006'
+        Text:
+          type: string
+          example: "Song text"
+        link:
+          type: string
+          example: "https://"
+    addSongrequestDto:
+      description: AddSong request dto
+      type: object
+      required:
+        - group
+        - name
+      properties:
+        group:
+          type: string
+          default: ""
+          example: "Group name"
+        name:
+          type: string
+          default: ""
+          example: "Song name"
